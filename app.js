@@ -2,6 +2,9 @@
 const itemsListContainer = document.querySelector(`.to-do__list`);
 const inputField = document.getElementById(`new__entry`);
 const inputBtn = document.querySelector(`.new__entry-btn`);
+let deleteBtns = [];
+let editBtns = [];
+
 
 const toDoDB = []; 
 
@@ -49,16 +52,6 @@ const getNewEntry = function getDataFromInputField(input){
 
 
 const addNewEntry = function addNewEntryToDB(data){
-  // let newId = toDoDB.length;
-  // let newStatus = 'pending';
-  // let newText = data;
-
-  // let newEntry = {
-  //   id: newId,
-  //   status: newStatus,
-  //   text: newText,
-  // }  
-
   toDoDB.push(data);
 
   console.log(toDoDB);
@@ -106,9 +99,19 @@ const displayNewEntry = function displayNewEntry(entry){
 
 // Calls
 displayDB(toDoDB);
+deleteBtns = [...document.querySelectorAll('.item__delete-btn')];
+editBtns = [...document.querySelectorAll('.item__edit-btn')];
+
 
 inputBtn.addEventListener('click', function() {
   addNewEntry(getNewEntry(inputField));  
   displayNewEntry(getNewEntry(inputField));
+  deleteBtns = [...document.querySelectorAll('.item__delete-btn')];
+  editBtns = [...document.querySelectorAll('.item__edit-btn')];
+  console.log(deleteBtns);
+console.log(editBtns);
 })
 
+// Change template to load check/unchecked input depending on status 
+console.log(deleteBtns);
+console.log(editBtns);
