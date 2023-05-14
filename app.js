@@ -4,7 +4,6 @@ const inputField = document.getElementById(`new__entry`);
 const inputBtn = document.querySelector(`.new__entry-btn`);
 let toDoDB = []; 
 let deleteBtns = [];
-
 if(!toDoDB){
   let toDoDB = [
     {
@@ -42,6 +41,7 @@ toDoDB = [
 // Functions
 
 const displayDB = function displayItemsFromDB(data) {
+  itemsListContainer.innerHTML = '';
   data.forEach((item) => {
     let itemDisplay = 
     `
@@ -63,12 +63,59 @@ const displayDB = function displayItemsFromDB(data) {
 
     itemsListContainer.insertAdjacentHTML('afterbegin', itemDisplay);
   })
+
+  deleteBtns = [...document.querySelectorAll('.item__delete-btn')];
+
+  deleteBtns.forEach((item) => {
+    item.addEventListener('click', function(e) {
+      deleteItem(e.target);
+    })
+  })
 };
 
-const addNewEntry =  function addEntryToDB() {
-  
+const getNewEntry =  function addEntryValues(input) {
+  let newId = toDoDB.length;
+  let newStatus = 'pending';
+  let newText = input.value;
+
+  let newEntryObject =  {
+    id: newId,
+    status: newStatus,
+    text: newText,
+  }
+
+  return newEntryObject;
 }
 
+const updateDB = function updateDbWithNewEntry(newEntryData) {
+  toDoDB.push(newEntryData);
+}
+
+const deleteItem = function deleteItem(target){
+  let item = target.closest('.to-do__item');
+  let itemID = item.dataset.id;
+
+  if(itemID !== -1){
+    deleteItemDB(itemID);
+  }
+
+  displayDB(toDoDB);
+}
+
+const deleteItemDB = function deleteItemDB(id){
+  toDoDB.splice(id, 1);
+}
 
 // Calls
 displayDB(toDoDB);
+
+inputBtn.addEventListener('click', function() {
+  updateDB(getNewEntry(inputField));
+  displayDB(toDoDB);
+})
+
+deleteBtns.forEach((item) => {
+  item.addEventListener('click', function(e) {
+    deleteItem(e.target);
+  })
+})
