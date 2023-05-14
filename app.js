@@ -2,22 +2,42 @@
 const itemsListContainer = document.querySelector(`.to-do__list`);
 const inputField = document.getElementById(`new__entry`);
 const inputBtn = document.querySelector(`.new__entry-btn`);
+let toDoDB = []; 
 let deleteBtns = [];
-let editBtns = [];
-
-
-const toDoDB = []; 
-
 
 if(!toDoDB){
-  const toDoDB = [
+  let toDoDB = [
     {
-      id: ``,
+      id: '',
       status: ``,
       text: ``,
     }
   ];  
 }
+
+// testing DB data
+toDoDB = [
+  {
+    id: 0,
+    status: `pending`,
+    text: `Lorem ips `,
+  },
+  {
+    id: 1,
+    status: `pending`,
+    text: `Lorem ips `,
+  },
+  {
+    id: 2,
+    status: `pending`,
+    text: `Lorem ips `,
+  },
+  {
+    id: 3,
+    status: `pending`,
+    text: `Lorem ips `,
+  },
+];  
 
 let entryTemplate = `
 <div class="to-do__item" data-id="id">
@@ -35,34 +55,15 @@ let entryTemplate = `
 `;
 
 // Functions
-const getNewEntry = function getDataFromInputField(input){
-  let newEntryData = input.value;
-  let newId = toDoDB.length;
-  let newStatus = 'pending';
-  let newText = newEntryData;
+const displayDB = function displayDB(dataDB) {
+  itemsListContainer.textContent = '';
 
-  let newEntry = {
-    id: newId,
-    status: newStatus,
-    text: newText,
-  }  
+  dataDB.forEach((item) => {
 
-  return newEntry;
-}
-
-
-const addNewEntry = function addNewEntryToDB(data){
-  toDoDB.push(data);
-
-  console.log(toDoDB);
-}
-
-const displayDB = function onLoadDisplayDB(db){
-  db.forEach((item) => {
-    entryTemplate = `
-    <div class="to-do__item" data-id="${item.id}">
+    let itemDisplay = `
+    <div class="to-do__item status--${item.status}" data-id="${item.id}">
     <div class="item__check item__function-box-center"><input type="checkbox" name="" id="" class="item__check-checkbox"></div>
-    <div class="item__text">${item.text}</div>
+    <div class="item__text">${item.text} ${item.id}</div>
     <div class="item__edit item__function-box-center">
       <button class="item__btn item__edit-btn">
       <span class="material-symbols-outlined item__fnc-btn-ico item__edit-btn-ico">edit</span>
@@ -73,45 +74,58 @@ const displayDB = function onLoadDisplayDB(db){
       <span class="material-symbols-outlined item__fnc-btn-ico item__delete-btn-ico">delete</span>
     </button>
     `;
-    
-    itemsListContainer.insertAdjacentHTML('afterbegin', entryTemplate);
+
+    itemsListContainer.insertAdjacentHTML('afterbegin', itemDisplay);    
   })
 }
 
-const displayNewEntry = function displayNewEntry(entry){
-  entryTemplate = `
-  <div class="to-do__item" data-id="${entry.id}">
-  <div class="item__check item__function-box-center"><input type="checkbox" name="" id="" class="item__check-checkbox"></div>
-  <div class="item__text">${entry.text}</div>
-  <div class="item__edit item__function-box-center">
-    <button class="item__btn item__edit-btn">
-    <span class="material-symbols-outlined item__fnc-btn-ico item__edit-btn-ico">edit</span>
-  </button>
-  </div>
-  <div class="item__delete item__function-box-center">
-  <button class="item__btn item__delete-btn">
-    <span class="material-symbols-outlined item__fnc-btn-ico item__delete-btn-ico">delete</span>
-  </button>
-  `;
-  
-  itemsListContainer.insertAdjacentHTML('afterbegin', entryTemplate);
+const addNewEntry = function addNewEntry(newData) {
+  let newEntryId = toDoDB.length;
+  let newEntryStatus = 'pending';
+  let newEntryText = newData.value;
+  let newObjectData = {
+    id: newEntryId,
+    status: newEntryStatus,
+    text: newEntryText,
+  }
+
+  return newObjectData;
+}
+
+const updateDB = function updateDbWithNewEntry(newData) {
+  toDoDB.push(newData);
+  displayDB(toDoDB);
+
+  deleteBtns = [...document.querySelectorAll('.item__delete-btn')];
+  deleteBtns.forEach((item) => {
+    item.addEventListener('click', function() {
+      deleteItem(item);
+    })
+  })
+}
+
+const deleteItemDOM = function deleteItemFromDOM() {
+
+}
+
+const deleteItemDB = function deleteItemFromDB() {
+
+}
+
+const deleteItem = function deleteItemFromDomAndDb(btn) {
+  console.log(`Delete`);
 }
 
 // Calls
 displayDB(toDoDB);
 deleteBtns = [...document.querySelectorAll('.item__delete-btn')];
-editBtns = [...document.querySelectorAll('.item__edit-btn')];
-
 
 inputBtn.addEventListener('click', function() {
-  addNewEntry(getNewEntry(inputField));  
-  displayNewEntry(getNewEntry(inputField));
-  deleteBtns = [...document.querySelectorAll('.item__delete-btn')];
-  editBtns = [...document.querySelectorAll('.item__edit-btn')];
-  console.log(deleteBtns);
-console.log(editBtns);
-})
+  updateDB(addNewEntry(inputField));
+});
 
-// Change template to load check/unchecked input depending on status 
-console.log(deleteBtns);
-console.log(editBtns);
+deleteBtns.forEach((item) => {
+  item.addEventListener('click', function() {
+    deleteItem(item);
+  })
+})
