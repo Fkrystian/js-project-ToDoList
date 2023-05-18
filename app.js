@@ -4,6 +4,8 @@ const inputField = document.getElementById(`new__entry`);
 const inputBtn = document.querySelector(`.new__entry-btn`);
 let toDoDB = []; 
 let deleteBtns = [];
+let editBtns = [];
+
 if(!toDoDB){
   let toDoDB = [
     {
@@ -65,7 +67,7 @@ const displayDB = function displayItemsFromDB(data) {
   })
 
   deleteBtns = [...document.querySelectorAll('.item__delete-btn')];
-
+  editBtns = [...document.querySelectorAll('.item__edit-btn')];
   deleteBtns.forEach((item) => {
     item.addEventListener('click', function(e) {
       deleteItem(e.target);
@@ -106,6 +108,40 @@ const deleteItemDB = function deleteItemDB(id){
   toDoDB.splice(id, 1);
 }
 
+
+const editItem = function editItemInDOM(target) {
+  let item = target.closest('.to-do__item');
+  let itemID = item.dataset.id;
+
+  let itemTextDiv = item.querySelector('.item__text')
+  let itemText = itemTextDiv.innerText;
+  
+  const inputElement = document.createElement('input');
+  inputElement.setAttribute('type', 'text');
+  inputElement.setAttribute('name', 'new__entry');
+  inputElement.setAttribute('id', 'new__entry');
+  inputElement.setAttribute('class', 'edit__entry-input');
+  inputElement.value = itemText;
+
+
+
+  if(itemID !== -1){
+    item.replaceChild(inputElement, itemTextDiv);
+    item.classList.add('edit-now');
+  }
+
+  if(item.classList.contains('edit-now')){
+    target.addEventListener('click', function(){
+      let newData = inputElement.value;
+      toDoDB[itemID].text = newData;
+      item.replaceChild(itemTextDiv, inputElement);
+      displayDB(toDoDB);
+      console.log(toDoDB);
+    })
+  } 
+}
+
+
 // Calls
 displayDB(toDoDB);
 
@@ -117,5 +153,11 @@ inputBtn.addEventListener('click', function() {
 deleteBtns.forEach((item) => {
   item.addEventListener('click', function(e) {
     deleteItem(e.target);
+  })
+})
+
+editBtns.forEach((item) => {
+  item.addEventListener('click', function(e) {
+    editItem(e.target);
   })
 })

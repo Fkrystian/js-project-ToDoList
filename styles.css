@@ -79,6 +79,12 @@ body{
   font-weight: 600;
 }
 
+/* Edit entry */
+.edit__entry-input{
+  width: 100%;
+  height: 3rem;
+}
+
 /* Items */
 .to-do__list{
   width: 100%;
