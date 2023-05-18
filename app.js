@@ -5,6 +5,7 @@ const inputBtn = document.querySelector(`.new__entry-btn`);
 let toDoDB = []; 
 let deleteBtns = [];
 let editBtns = [];
+let checkBtns = [];
 
 if(!toDoDB){
   let toDoDB = [
@@ -15,42 +16,50 @@ if(!toDoDB){
     }
   ];  
 }
+console.log(toDoDB);
 
 // testing DB data
-toDoDB = [
-  {
-    id: 0,
-    status: `pending`,
-    text: `Lorem ips `,
-  },
-  {
-    id: 1,
-    status: `pending`,
-    text: `Lorem ips `,
-  },
-  {
-    id: 2,
-    status: `pending`,
-    text: `Lorem ips `,
-  },
-  {
-    id: 3,
-    status: `pending`,
-    text: `Lorem ips `,
-  },
-];  
+// toDoDB = [
+//   {
+//     id: 0,
+//     status: `pending`,
+//     text: `Lorem ips 0`,
+//   },
+//   {
+//     id: 1,
+//     status: `pending`,
+//     text: `Lorem ips 1`,
+//   },
+//   {
+//     id: 2,
+//     status: `pending`,
+//     text: `Lorem ips 2`,
+//   },
+//   {
+//     id: 3,
+//     status: `pending`,
+//     text: `Lorem ips 3`,
+//   },
+// ];  
 
 
 
 // Functions
 
+// Display DataBase
 const displayDB = function displayItemsFromDB(data) {
   itemsListContainer.innerHTML = '';
   data.forEach((item) => {
+
+    let itemStatus = '';
+    if(item.status === 'done'){
+      itemStatus = 'checked';
+    }
+
     let itemDisplay = 
     `
     <div class="to-do__item item__status--${item.status}" data-id="${item.id}">
-      <div class="item__check item__function-box-center"><input type="checkbox" name="" id="" class="item__check-checkbox"></div>
+      <div class="item__check item__function-box-center"><input type="checkbox" name="" id="" class="item__check-checkbox" ${itemStatus}></div>
       <div class="item__text">${item.text}</div>
       <div class="item__edit item__function-box-center">
         <button class="item__btn item__edit-btn">
@@ -70,7 +79,8 @@ const displayDB = function displayItemsFromDB(data) {
 
   deleteBtns = [...document.querySelectorAll('.item__delete-btn')];
   editBtns = [...document.querySelectorAll('.item__edit-btn')];
-  
+  checkBtns = [...document.querySelectorAll('.item__check-checkbox')];
+
   deleteBtns.forEach((item) => {
     item.addEventListener('click', function(e) {
       deleteItem(e.target);
@@ -82,8 +92,15 @@ const displayDB = function displayItemsFromDB(data) {
       editItem(e.target);
     })
   })
+
+  checkBtns.forEach((item) => {
+    item.addEventListener('click', function(e) {
+      checkItem(e.target);
+    })
+  })
 };
 
+// New Entry
 const getNewEntry =  function addEntryValues(input) {
   let newId = toDoDB.length;
   let newStatus = 'pending';
@@ -98,12 +115,14 @@ const getNewEntry =  function addEntryValues(input) {
   return newEntryObject;
 }
 
+// Update DB
 const updateDB = function updateDbWithNewEntry(newEntryData) {
   toDoDB.push(newEntryData);
   updateLocalStorage();
   getLocalStorage();
 }
 
+// Delete Item
 const deleteItem = function deleteItem(target){
   let item = target.closest('.to-do__item');
   let itemID = item.dataset.id;
@@ -121,7 +140,7 @@ const deleteItemDB = function deleteItemDB(id){
   getLocalStorage();
 }
 
-
+// Edit Item
 const editItem = function editItemInDOM(target) {
   let item = target.closest('.to-do__item');
   let itemID = item.dataset.id;
@@ -157,6 +176,24 @@ const editItem = function editItemInDOM(target) {
   getLocalStorage();
 }
 
+// Check item
+const checkItem = function(target){
+  let item = target.closest('.to-do__item');
+  let itemID = item.dataset.id;
+
+  if(itemID !== -1){
+    if(toDoDB[itemID].status === 'pending'){
+      toDoDB[itemID].status = 'done';
+    } else if (toDoDB[itemID].status === 'done'){
+      toDoDB[itemID].status = 'pending';
+    }
+  }
+
+  updateLocalStorage();
+  getLocalStorage();
+
+}
+
 // Local storage
 const updateLocalStorage = function updateDataInlocalStorage(){
   localStorage.clear();
@@ -165,6 +202,16 @@ const updateLocalStorage = function updateDataInlocalStorage(){
 }
 
 const getLocalStorage = function getDataFromLocalStorage(){
+  if(!toDoDB){
+    let toDoDB = [
+      {
+        id: '',
+        status: ``,
+        text: ``,
+      }
+    ];  
+  }
+
   let dataString = localStorage.getItem('data');
 
   if(!dataString){
@@ -178,8 +225,8 @@ const getLocalStorage = function getDataFromLocalStorage(){
 }
 
 // Calls
-updateLocalStorage();
 getLocalStorage();
+updateLocalStorage();
 displayDB(toDoDB);
 
 inputBtn.addEventListener('click', function() {
@@ -187,14 +234,20 @@ inputBtn.addEventListener('click', function() {
   displayDB(toDoDB);
 })
 
-deleteBtns.forEach((item) => {
-  item.addEventListener('click', function(e) {
-    deleteItem(e.target);
-  })
-})
+// deleteBtns.forEach((item) => {
+//   item.addEventListener('click', function(e) {
+//     deleteItem(e.target);
+//   })
+// })
 
-editBtns.forEach((item) => {
-  item.addEventListener('click', function(e) {
-    editItem(e.target);
-  })
-})
+// editBtns.forEach((item) => {
+//   item.addEventListener('click', function(e) {
+//     editItem(e.target);
+//   })
+// })
+
+// checkBtns.forEach((item) => {
+//   item.addEventListener('click', function(e) {
+//     checkItem(e.target);
+//   })
+// })
