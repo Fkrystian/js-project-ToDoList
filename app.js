@@ -40,6 +40,8 @@ toDoDB = [
   },
 ];  
 
+
+
 // Functions
 
 const displayDB = function displayItemsFromDB(data) {
@@ -49,7 +51,7 @@ const displayDB = function displayItemsFromDB(data) {
     `
     <div class="to-do__item item__status--${item.status}" data-id="${item.id}">
       <div class="item__check item__function-box-center"><input type="checkbox" name="" id="" class="item__check-checkbox"></div>
-      <div class="item__text">${item.text} ${item.id}</div>
+      <div class="item__text">${item.text}</div>
       <div class="item__edit item__function-box-center">
         <button class="item__btn item__edit-btn">
         <span class="material-symbols-outlined item__fnc-btn-ico item__edit-btn-ico">edit</span>
@@ -98,6 +100,8 @@ const getNewEntry =  function addEntryValues(input) {
 
 const updateDB = function updateDbWithNewEntry(newEntryData) {
   toDoDB.push(newEntryData);
+  updateLocalStorage();
+  getLocalStorage();
 }
 
 const deleteItem = function deleteItem(target){
@@ -113,6 +117,8 @@ const deleteItem = function deleteItem(target){
 
 const deleteItemDB = function deleteItemDB(id){
   toDoDB.splice(id, 1);
+  updateLocalStorage();
+  getLocalStorage();
 }
 
 
@@ -146,10 +152,34 @@ const editItem = function editItemInDOM(target) {
       console.log(toDoDB);
     })
   } 
+
+  updateLocalStorage();
+  getLocalStorage();
 }
 
+// Local storage
+const updateLocalStorage = function updateDataInlocalStorage(){
+  localStorage.clear();
+  let dataString = JSON.stringify(toDoDB);
+  localStorage.setItem('data', dataString);
+}
+
+const getLocalStorage = function getDataFromLocalStorage(){
+  let dataString = localStorage.getItem('data');
+
+  if(!dataString){
+    return;
+  } else {
+    let dataArray = JSON.parse(dataString);
+    toDoDB = dataArray;
+  }
+
+  return toDoDB;
+}
 
 // Calls
+updateLocalStorage();
+getLocalStorage();
 displayDB(toDoDB);
 
 inputBtn.addEventListener('click', function() {
