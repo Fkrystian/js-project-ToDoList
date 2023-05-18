@@ -68,9 +68,16 @@ const displayDB = function displayItemsFromDB(data) {
 
   deleteBtns = [...document.querySelectorAll('.item__delete-btn')];
   editBtns = [...document.querySelectorAll('.item__edit-btn')];
+  
   deleteBtns.forEach((item) => {
     item.addEventListener('click', function(e) {
       deleteItem(e.target);
+    })
+  })
+
+  editBtns.forEach((item) => {
+    item.addEventListener('click', function(e) {
+      editItem(e.target);
     })
   })
 };
